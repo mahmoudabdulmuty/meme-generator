@@ -1,20 +1,24 @@
-import { useState } from 'react';
-import memesData from '../memesData';
-
+import { useState, useEffect } from 'react';
 export default function Meme() {
 	const [meme, setMeme] = useState({
 		topText: '',
 		bottomText: '',
 		randomImage: ''
 	});
-	const [allMemeImages] = useState(memesData);
+	const [allMemes, setAllMemes] = useState([]);
 
+	//
+	useEffect(() => {
+		console.log('fetch run');
+		fetch('https://api.imgflip.com/get_memes')
+			.then((res) => res.json())
+			.then((memesData) => setAllMemes(memesData.data.memes));
+	}, []);
 	function getMemeImage() {
-		const memes = allMemeImages.data.memes;
-		const max = memes.length;
+		const max = allMemes.length;
 		const min = 0;
 		const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
-		const memUrl = memes[randomNum].url;
+		const memUrl = allMemes[randomNum].url;
 		setMeme((prevMeme) => {
 			return {
 				...prevMeme,
